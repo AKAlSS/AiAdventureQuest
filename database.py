@@ -1,19 +1,19 @@
-'''
-AI Adventure Quest Database
-'''
+# database.py
+import json
+import os
+
 class Database:
-    def __init__(self):
-        # Initialize the database
-        pass
-    def save_game_state(self, game_state):
-        # Save the game state to the database
-        with open("game_state.txt", "w") as file:
-            file.write(game_state)
+    def __init__(self, filename="game_state.json"):
+        self.filename = filename
+
     def load_game_state(self):
-        # Load the game state from the database
-        try:
-            with open("game_state.txt", "r") as file:
-                game_state = file.read()
-            return game_state
-        except FileNotFoundError:
-            return None
+        # Load game state logic here
+        if os.path.exists(self.filename):
+            with open(self.filename, 'r') as file:
+                return json.load(file)
+        return ""
+
+    def save_game_state(self, game_state):
+        # Save game state logic here
+        with open(self.filename, 'w') as file:
+            json.dump(game_state, file)
