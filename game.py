@@ -5,6 +5,8 @@ from minigame import MiniGame
 from tutorial import Tutorial
 from dashboard import Dashboard
 from player import Player
+from coding_challenge import CodingChallenge
+from quest import Quest
 
 class Game:
     def __init__(self):
@@ -16,6 +18,8 @@ class Game:
         self.tutorial = Tutorial("AI Basics Tutorial", "Learn the basics of AI")
         self.dashboard = Dashboard()
         self.player = Player()
+        self.coding_challenge = CodingChallenge("Code Challenge", "Solve coding problems to progress")
+        self.quest = Quest("AI Quest", "Complete various tasks to progress in the game")
 
         # Example content for quiz and tutorial
         self.quiz.add_question("What does AI stand for?", "Artificial Intelligence")
@@ -85,6 +89,20 @@ class Game:
             self.game_state = self.dashboard.display()
         elif command == "save":
             self.game_state = self.dialogue_manager.process_response("save")
+        elif command == "codingchallenge":
+            if "start" in args:
+                self.game_state = f"Starting Coding Challenge: {self.coding_challenge.get_name()}"
+            elif "complete" in args:
+                self.game_state = f"Coding Challenge Completed: {self.coding_challenge.get_name()}"
+            else:
+                self.game_state = f"Coding Challenge: {self.coding_challenge.get_description()}"
+        elif command == "quest":
+            if "start" in args:
+                self.game_state = f"Starting Quest: {self.quest.get_name()}"
+            elif "complete" in args:
+                self.game_state = f"Quest Completed: {self.quest.get_name()}"
+            else:
+                self.game_state = f"Quest: {self.quest.get_description()}"
         else:
             self.game_state = self.dialogue_manager.process_response(input_text)
 
