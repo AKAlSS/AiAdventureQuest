@@ -1,3 +1,4 @@
+# game.py
 import dialogue
 from quiz import Quiz
 from minigame import MiniGame
@@ -48,10 +49,6 @@ class Game:
             elif "reset" in args:
                 self.quiz.reset()
                 self.game_state = "Quiz has been reset."
-            elif "repeat" in args:
-                self.game_state = self.quiz.get_next_question()
-            else:
-                self.game_state = self.dialogue_manager.process_response("quiz")
         elif command == "minigame":
             if "start" in args:
                 self.game_state = self.minigame.start()

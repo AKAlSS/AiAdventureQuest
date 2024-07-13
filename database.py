@@ -3,17 +3,15 @@ import json
 import os
 
 class Database:
-    def __init__(self, filename="game_state.json"):
-        self.filename = filename
+    def __init__(self, filepath='game_state.json'):
+        self.filepath = filepath
 
     def load_game_state(self):
-        # Load game state logic here
-        if os.path.exists(self.filename):
-            with open(self.filename, 'r') as file:
+        if os.path.exists(self.filepath):
+            with open(self.filepath, 'r') as file:
                 return json.load(file)
-        return ""
+        return None
 
     def save_game_state(self, game_state):
-        # Save game state logic here
-        with open(self.filename, 'w') as file:
+        with open(self.filepath, 'w') as file:
             json.dump(game_state, file)

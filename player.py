@@ -1,14 +1,14 @@
-'''
-AI Adventure Quest - Player File
-'''
+# player.py
 class Player:
     def __init__(self):
-        self.name = ""
-        self.character = ""
-    def create_character(self):
-        self.name = input("Enter your name: ")
-        self.character = input("Choose your character: ")
-    def get_name(self):
-        return self.name
-    def get_character(self):
-        return self.character
+        self.name = "Player"
+        self.character = "Default Character"
+
+    def set_name(self, name):
+        self.name = name
+
+    def set_character(self, character):
+        self.character = character
+
+    def get_status(self):
+        return f"Player Name: {self.name}, Character: {self.character}"

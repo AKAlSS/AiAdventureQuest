@@ -1,30 +1,30 @@
+# quiz.py
 class Quiz:
     def __init__(self, name, description):
         self.name = name
         self.description = description
         self.questions = []
-        self.current_question_index = 0
-        self.score = 0
+        self.current_question_index = -1
 
     def add_question(self, question, answer):
         self.questions.append((question, answer))
 
     def get_next_question(self):
+        self.current_question_index += 1
         if self.current_question_index < len(self.questions):
-            question = self.questions[self.current_question_index][0]
-            self.current_question_index += 1
-            return question
+            return self.questions[self.current_question_index][0]
         else:
-            return "Quiz completed. Your score: {}".format(self.score)
+            self.current_question_index = -1
+            return "Quiz finished. You can reset the quiz to start over."
 
     def check_answer(self, answer):
-        correct_answer = self.questions[self.current_question_index - 1][1]
+        if self.current_question_index == -1:
+            return "Start the quiz first by typing 'quiz start'."
+        correct_answer = self.questions[self.current_question_index][1]
         if answer.lower() == correct_answer.lower():
-            self.score += 1
             return "Correct!"
         else:
-            return "Wrong! The correct answer was: {}".format(correct_answer)
+            return f"Incorrect. The correct answer was: {correct_answer}"
 
     def reset(self):
-        self.current_question_index = 0
-        self.score = 0
+        self.current_question_index = -1
