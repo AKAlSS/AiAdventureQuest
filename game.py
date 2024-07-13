@@ -1,31 +1,29 @@
 # game.py
 import dialogue
-from quiz import Quiz
+from quiz import get_ai_quiz
 from minigame import MiniGame
-from tutorial import Tutorial
+from tutorial import get_ai_tutorial
 from dashboard import Dashboard
+from database import Database
 from player import Player
-from coding_challenge import CodingChallenge
+from coding_challenge import get_ai_coding_challenges
 from quest import Quest
+from knowledge_base import KnowledgeBase
 
 class Game:
     def __init__(self):
         self.game_state = ""
         self.is_game_started = False
         self.dialogue_manager = dialogue.DialogueManager()
-        self.quiz = Quiz("AI Concepts Quiz", "Test your knowledge on AI concepts")
+        self.quiz = get_ai_quiz()
         self.minigame = MiniGame("AI Adventure", "A fun adventure game")
-        self.tutorial = Tutorial("AI Basics Tutorial", "Learn the basics of AI")
+        self.tutorial = get_ai_tutorial()
         self.dashboard = Dashboard()
         self.player = Player()
-        self.coding_challenge = CodingChallenge("Code Challenge", "Solve coding problems to progress")
+        self.coding_challenges = get_ai_coding_challenges()
+        self.current_coding_challenge = None
         self.quest = Quest("AI Quest", "Complete various tasks to progress in the game")
-
-        # Example content for quiz and tutorial
-        self.quiz.add_question("What does AI stand for?", "Artificial Intelligence")
-        self.quiz.add_question("Name a popular programming language for AI.", "Python")
-        self.tutorial.add_step("Step 1: Understand what AI is.")
-        self.tutorial.add_step("Step 2: Learn about different AI frameworks.")
+        self.knowledge_base = KnowledgeBase()
 
     def start(self):
         self.is_game_started = True
@@ -91,11 +89,13 @@ class Game:
             self.game_state = self.dialogue_manager.process_response("save")
         elif command == "codingchallenge":
             if "start" in args:
-                self.game_state = f"Starting Coding Challenge: {self.coding_challenge.get_name()}"
-            elif "complete" in args:
-                self.game_state = f"Coding Challenge Completed: {self.coding_challenge.get_name()}"
+                self.current_coding_challenge = self.coding_challenges[0]  # Example to pick the first challenge
+                self.game_state = f"Starting Coding Challenge: {self.current_coding_challenge.get_name()}"
+            elif "complete" in args and self.current_coding_challenge:
+                self.game_state = f"Coding Challenge Completed: {self.current_coding_challenge.get_name()}"
+                self.current_coding_challenge = None
             else:
-                self.game_state = f"Coding Challenge: {self.coding_challenge.get_description()}"
+                self.game_state = f"Coding Challenge: {self.current_coding_challenge.get_description() if self.current_coding_challenge else 'No active challenge'}"
         elif command == "quest":
             if "start" in args:
                 self.game_state = f"Starting Quest: {self.quest.get_name()}"
@@ -103,6 +103,12 @@ class Game:
                 self.game_state = f"Quest Completed: {self.quest.get_name()}"
             else:
                 self.game_state = f"Quest: {self.quest.get_description()}"
+        elif command == "knowledge":
+            if args:
+                topic = " ".join(args)
+                self.game_state = self.knowledge_base.get_topic_info(topic)
+            else:
+                self.game_state = "Available topics: " + ", ".join(self.knowledge_base.topics.keys())
         else:
             self.game_state = self.dialogue_manager.process_response(input_text)
 
@@ -113,3 +119,51 @@ class Game:
             return self.dialogue_manager.get_help_message()
         else:
             return self.game_state
+
+# Main function to run the game
+def main():
+    import tkinter as tk
+
+    class GameGUI:
+        def __init__(self, master):
+            self.master = master
+            self.master.title("AI Adventure Quest")
+            self.create_widgets()
+            self.database = Database()
+            self.game = Game()
+            self.load_game_state()
+
+        def create_widgets(self):
+            self.input_text = tk.Entry(self.master)
+            self.input_text.pack()
+            self.submit_button = tk.Button(self.master, text="Submit", command=self.process_input)
+            self.submit_button.pack()
+            self.output_text = tk.Text(self.master)
+            self.output_text.pack()
+
+        def load_game_state(self):
+            game_state = self.database.load_game_state()
+            if game_state:
+                self.game.game_state = game_state
+
+        def save_game_state(self):
+            game_state = self.game.game_state
+            self.database.save_game_state(game_state)
+
+        def process_input(self):
+            input_text = self.input_text.get()
+            self.game.process_input(input_text)
+            self.save_game_state()
+            self.update_gui()
+
+        def update_gui(self):
+            self.output_text.delete(1.0, tk.END)
+            self.output_text.insert(tk.END, self.game.get_output())
+
+    root = tk.Tk()
+    game_gui = GameGUI(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
+

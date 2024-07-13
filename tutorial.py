@@ -19,3 +19,10 @@ class Tutorial:
 
     def reset(self):
         self.current_step_index = -1
+
+def get_ai_tutorial():
+    tutorial = Tutorial("AI Basics Tutorial", "Learn the basics of AI")
+    tutorial.add_step("Step 1: Understand what AI is.")
+    tutorial.add_step("Step 2: Learn about different AI frameworks like TensorFlow and PyTorch.")
+    tutorial.add_step("Step 3: Implement a basic machine learning model.")
+    return tutorial

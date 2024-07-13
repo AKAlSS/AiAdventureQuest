@@ -28,3 +28,10 @@ class Quiz:
 
     def reset(self):
         self.current_question_index = -1
+
+def get_ai_quiz():
+    quiz = Quiz("AI Concepts Quiz", "Test your knowledge on AI concepts")
+    quiz.add_question("What does AI stand for?", "Artificial Intelligence")
+    quiz.add_question("Name a popular programming language for AI.", "Python")
+    quiz.add_question("What is machine learning?", "A subset of AI that focuses on building systems that learn from data.")
+    return quiz
