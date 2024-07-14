@@ -1,7 +1,9 @@
-# main.py
 import tkinter as tk
 from game import Game
 from database import Database
+import logging
+
+logging.basicConfig(filename='game.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s')
 
 class GameGUI:
     def __init__(self, master):
@@ -11,6 +13,7 @@ class GameGUI:
         self.database = Database()
         self.game = Game()
         self.load_game_state()
+        logging.info("Game started")
 
     def create_widgets(self):
         self.input_text = tk.Entry(self.master)
@@ -24,16 +27,20 @@ class GameGUI:
         game_state = self.database.load_game_state()
         if game_state:
             self.game.game_state = game_state
+            logging.info("Game state loaded")
 
     def save_game_state(self):
         game_state = self.game.game_state
         self.database.save_game_state(game_state)
+        logging.info("Game state saved")
 
     def process_input(self):
         input_text = self.input_text.get()
+        logging.info(f"User input: {input_text}")
         self.game.process_input(input_text)
         self.save_game_state()
         self.update_gui()
+        logging.info(f"Game state: {self.game.get_output()}")
 
     def update_gui(self):
         self.output_text.delete(1.0, tk.END)
