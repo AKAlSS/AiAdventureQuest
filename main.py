@@ -15,14 +15,20 @@ class GameGUI:
         self.lessons = Lessons()
         self.quiz = get_ai_quiz()
         self.current_quiz = None
+        self.selected_option = tk.StringVar()
+        self.game_state = {'current_content': ''}
         self.load_game_state()
         logging.info("Game started")
 
     def create_widgets(self):
+        self.welcome_text = tk.Label(self.master, text="Welcome to AI Adventure Quest!\nLearn about AI agents and test your knowledge.\nUse the buttons below to navigate.")
+        self.welcome_text.pack()
+
         self.input_text = tk.Entry(self.master)
         self.input_text.pack()
         self.submit_button = tk.Button(self.master, text="Submit", command=self.process_input)
         self.submit_button.pack()
+
         self.output_text = tk.Text(self.master)
         self.output_text.pack()
 
@@ -39,7 +45,7 @@ class GameGUI:
             self.game_state = game_state
             logging.info("Game state loaded")
         else:
-            self.game_state = {}
+            self.game_state = {'current_content': ''}
 
     def save_game_state(self):
         self.database.save_game_state(self.game_state)
@@ -63,14 +69,18 @@ class GameGUI:
             self.game_state['current_content'] = self.lessons.get_lesson(topic)
         elif command.startswith('quiz '):
             self.current_quiz = self.quiz
-            self.game_state['current_content'] = self.current_quiz.get_next_question()
+            question, options = self.current_quiz.get_next_question()
+            self.game_state['current_content'] = question
+            self.display_options(options)
         elif command.startswith('answer '):
             if self.current_quiz:
                 answer = command.split(' ', 1)[1]
                 self.game_state['current_content'] = self.current_quiz.check_answer(answer)
         elif command == 'next':
             if self.current_quiz:
-                self.game_state['current_content'] = self.current_quiz.get_next_question()
+                question, options = self.current_quiz.get_next_question()
+                self.game_state['current_content'] = question
+                self.display_options(options)
         elif command == 'reset':
             if self.current_quiz:
                 self.current_quiz.reset()
@@ -92,7 +102,25 @@ class GameGUI:
 
     def start_quiz(self):
         self.current_quiz = self.quiz
-        self.game_state['current_content'] = self.current_quiz.get_next_question()
+        question, options = self.current_quiz.get_next_question()
+        self.game_state['current_content'] = question
+        self.display_options(options)
+        self.update_gui()
+
+    def display_options(self, options):
+        for widget in self.master.winfo_children():
+            if isinstance(widget, tk.Radiobutton):
+                widget.destroy()
+
+        for option in options:
+            tk.Radiobutton(self.master, text=option, variable=self.selected_option, value=option).pack()
+
+        tk.Button(self.master, text="Submit Answer", command=self.submit_answer).pack()
+
+    def submit_answer(self):
+        answer = self.selected_option.get()
+        result = self.current_quiz.check_answer(answer)
+        self.game_state['current_content'] = result
         self.update_gui()
 
     def display_feedback(self):
