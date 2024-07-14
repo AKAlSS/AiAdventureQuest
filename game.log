@@ -27,3 +27,5 @@
 2024-07-14 14:58:02,691 INFO: User input: tutorial starttutorial next
 2024-07-14 14:58:02,692 INFO: Game state saved
 2024-07-14 14:58:02,692 INFO: Game state: Step 2: Learn about different AI frameworks like TensorFlow and PyTorch.
+2024-07-14 18:59:40,271 INFO: Game state loaded
+2024-07-14 18:59:40,271 INFO: Game started
