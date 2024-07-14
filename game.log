@@ -1,0 +1,29 @@
+2024-07-14 14:54:41,383 INFO: Game state loaded
+2024-07-14 14:54:41,383 INFO: Game started
+2024-07-14 14:56:55,285 INFO: User input: 
+2024-07-14 14:56:55,286 INFO: Game state saved
+2024-07-14 14:56:55,286 INFO: Game state: That doesn't seem related to the game. Maybe try 'start' to begin your adventure.
+2024-07-14 14:57:03,052 INFO: User input: 
+2024-07-14 14:57:03,052 INFO: Game state saved
+2024-07-14 14:57:03,053 INFO: Game state: That doesn't seem related to the game. Maybe try 'start' to begin your adventure.
+2024-07-14 14:57:04,588 INFO: User input: start
+2024-07-14 14:57:04,589 INFO: Game state saved
+2024-07-14 14:57:04,589 INFO: Game state: Let's get started! You can begin by typing 'quiz start', 'minigame start', or 'tutorial start'. For more options, type 'help'.
+2024-07-14 14:57:58,312 INFO: User input: quiz startquiz answer Artificial Intelligence
+2024-07-14 14:57:58,313 INFO: Game state saved
+2024-07-14 14:57:58,313 INFO: Game state: Start the quiz first by typing 'quiz start'.
+2024-07-14 14:57:59,038 INFO: User input: quiz startquiz answer Artificial Intelligencequiz answer Python
+2024-07-14 14:57:59,039 INFO: Game state saved
+2024-07-14 14:57:59,039 INFO: Game state: Start the quiz first by typing 'quiz start'.
+2024-07-14 14:57:59,476 INFO: User input: quiz startquiz answer Artificial Intelligencequiz answer Python
+2024-07-14 14:57:59,477 INFO: Game state saved
+2024-07-14 14:57:59,477 INFO: Game state: Start the quiz first by typing 'quiz start'.
+2024-07-14 14:57:59,644 INFO: User input: quiz startquiz answer Artificial Intelligencequiz answer Python
+2024-07-14 14:57:59,645 INFO: Game state saved
+2024-07-14 14:57:59,645 INFO: Game state: Start the quiz first by typing 'quiz start'.
+2024-07-14 14:58:01,468 INFO: User input: tutorial start
+2024-07-14 14:58:01,469 INFO: Game state saved
+2024-07-14 14:58:01,469 INFO: Game state: Starting tutorial: Step 1: Understand what AI is.
+2024-07-14 14:58:02,691 INFO: User input: tutorial starttutorial next
+2024-07-14 14:58:02,692 INFO: Game state saved
+2024-07-14 14:58:02,692 INFO: Game state: Step 2: Learn about different AI frameworks like TensorFlow and PyTorch.

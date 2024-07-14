@@ -1,4 +1,3 @@
-# knowledge_base.py
 class KnowledgeBase:
     def __init__(self):
         self.topics = {
@@ -12,33 +11,41 @@ class KnowledgeBase:
     def get_ai_agents_info(self):
         return [
             "AI agents are autonomous entities which observe through sensors and act upon an environment using actuators and direct their activity towards achieving goals.",
-            "Examples of AI agents include chatbots, recommendation systems, and autonomous vehicles."
+            "Examples of AI agents include chatbots, recommendation systems, and autonomous vehicles.",
+            "Key characteristics of AI agents: autonomy, social ability, reactivity, and proactiveness.",
+            "AI agents can be classified into reactive agents, deliberative agents, and hybrid agents."
         ]
 
     def get_ai_frameworks_info(self):
         return [
             "TensorFlow: An end-to-end open-source platform for machine learning.",
             "PyTorch: An open-source machine learning library based on the Torch library.",
-            "Scikit-learn: A machine learning library for Python that features various classification, regression, and clustering algorithms."
+            "Scikit-learn: A machine learning library for Python that features various classification, regression, and clustering algorithms.",
+            "Keras: A high-level neural networks API, written in Python and capable of running on top of TensorFlow, CNTK, or Theano."
         ]
 
     def get_agentic_workflows_info(self):
         return [
             "Agentic workflows involve the steps and processes that AI agents follow to achieve their objectives.",
-            "These workflows typically include data collection, data processing, decision making, and action execution."
+            "These workflows typically include data collection, data processing, decision making, and action execution.",
+            "Common stages in agentic workflows: perception, reasoning, learning, and action.",
+            "Example workflow: A recommendation system collects user data, processes it to understand preferences, learns from interactions, and provides personalized recommendations."
         ]
 
     def get_agentic_automation_info(self):
         return [
             "Agentic automation refers to the use of AI agents to automate tasks and processes without human intervention.",
-            "Examples include robotic process automation (RPA) and automated customer service agents."
+            "Examples include robotic process automation (RPA) and automated customer service agents.",
+            "Benefits of agentic automation: increased efficiency, reduced errors, cost savings, and the ability to handle complex tasks.",
+            "Challenges in agentic automation: ensuring reliability, handling unexpected situations, and integrating with existing systems."
         ]
 
     def get_ai_concepts_info(self):
         return [
             "Machine Learning: A subset of AI focused on building systems that learn from data.",
             "Deep Learning: A subset of machine learning involving neural networks with many layers.",
-            "Natural Language Processing (NLP): A field of AI that gives machines the ability to read, understand, and derive meaning from human languages."
+            "Natural Language Processing (NLP): A field of AI that gives machines the ability to read, understand, and derive meaning from human languages.",
+            "Reinforcement Learning: A type of machine learning where agents learn by interacting with their environment and receiving rewards or penalties."
         ]
 
     def get_topic_info(self, topic):

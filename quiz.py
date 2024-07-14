@@ -1,4 +1,3 @@
-# quiz.py
 class Quiz:
     def __init__(self, name, description):
         self.name = name
@@ -34,4 +33,7 @@ def get_ai_quiz():
     quiz.add_question("What does AI stand for?", "Artificial Intelligence")
     quiz.add_question("Name a popular programming language for AI.", "Python")
     quiz.add_question("What is machine learning?", "A subset of AI that focuses on building systems that learn from data.")
+    quiz.add_question("What is deep learning?", "A subset of machine learning involving neural networks with many layers.")
+    quiz.add_question("What is NLP?", "A field of AI that gives machines the ability to read, understand, and derive meaning from human languages.")
+    quiz.add_question("What is reinforcement learning?", "A type of machine learning where agents learn by interacting with their environment and receiving rewards or penalties.")
     return quiz
