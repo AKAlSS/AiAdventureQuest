@@ -1,6 +1,7 @@
 import tkinter as tk
-from lessons import Lessons
-from quiz import get_ai_quiz, Quiz
+from tkinter import scrolledtext
+from knowledge_base import KnowledgeBase
+from quiz import get_ai_quiz
 from database import Database
 import logging
 
@@ -12,7 +13,7 @@ class GameGUI:
         self.master.title("AI Adventure Quest")
         self.create_widgets()
         self.database = Database()
-        self.lessons = Lessons()
+        self.knowledge_base = KnowledgeBase()
         self.quiz = get_ai_quiz()
         self.current_quiz = None
         self.selected_option = tk.StringVar()
@@ -30,8 +31,8 @@ class GameGUI:
         self.submit_button = tk.Button(self.master, text="Submit", command=self.process_input)
         self.submit_button.pack()
 
-        self.output_text = tk.Text(self.master)
-        self.output_text.pack()
+        self.output_text = scrolledtext.ScrolledText(self.master, wrap=tk.WORD)
+        self.output_text.pack(expand=True, fill='both')
 
         self.lesson_button = tk.Button(self.master, text="View Lessons", command=self.display_lessons)
         self.lesson_button.pack()
@@ -62,91 +63,61 @@ class GameGUI:
 
     def update_gui(self):
         self.output_text.delete(1.0, tk.END)
-        self.output_text.insert(tk.END, self.get_output())
+        self.output_text.insert(tk.END, self.game_state.get('current_content', ''))
 
     def handle_command(self, command):
-        if isinstance(self.game_state, str):
-            self.game_state = {'current_content': self.game_state}
-        
         if command.startswith('lesson '):
             topic = command.split(' ', 1)[1]
-            lesson_content = self.lessons.get_lesson(topic)
+            lesson_content = self.knowledge_base.get_topic_info(topic)
             self.game_state['current_content'] = lesson_content
-        elif command == 'lessons':
-            self.display_lessons()
-        elif command == 'quiz':
-            self.start_quiz()
-        elif command.startswith('answer '):
-            if self.current_quiz:
-                answer = command.split(' ', 1)[1]
-                self.game_state['current_content'] = self.current_quiz.check_answer(answer)
-        elif command == 'next':
-            if self.current_quiz:
-                question, options = self.current_quiz.get_next_question()
-                self.game_state['current_content'] = question
-                self.display_options(options)
+        elif command.startswith('quiz '):
+            answer = command.split(' ', 1)[1]
+            feedback = self.current_quiz.check_answer(answer)
+            self.game_state['current_content'] = feedback
+        elif command == 'quiz start':
+            self.current_quiz = self.quiz
+            question, options = self.current_quiz.get_next_question()
+            self.game_state['current_content'] = question + "\n" + "\n".join(options)
+        elif command == 'quiz next':
+            question, options = self.current_quiz.get_next_question()
+            self.game_state['current_content'] = question + "\n" + "\n".join(options)
         elif command == 'reset':
-            if self.current_quiz:
-                self.current_quiz.reset()
-                self.game_state['current_content'] = "Quiz has been reset."
-        elif command == 'feedback':
-            self.display_feedback()
-        elif command == 'dashboard':
-            self.game_state['current_content'] = "Displaying dashboard (to be implemented)"
+            self.current_quiz.reset()
+            self.game_state['current_content'] = "Quiz has been reset."
         else:
-            self.game_state['current_content'] = "Command not recognized. Please type 'lessons' to view lessons or 'quiz' to take a quiz."
+            self.game_state['current_content'] = "Command not recognized. Please use 'lesson [topic]', 'quiz start', 'quiz [answer]', 'quiz next', or 'reset'."
 
-    def get_output(self):
-        return self.game_state.get('current_content', '')
+    def show_instructions(self):
+        self.game_state['current_content'] = (
+            "Welcome to AI Adventure Quest!\n\n"
+            "Available commands:\n"
+            "- 'lesson [topic]': View a lesson on a specific topic.\n"
+            "- 'quiz start': Start the quiz.\n"
+            "- 'quiz [answer]': Submit an answer to the current quiz question.\n"
+            "- 'quiz next': Proceed to the next quiz question.\n"
+            "- 'reset': Reset the current quiz.\n\n"
+            "Topics available:\n"
+            "- AI Agents\n"
+            "- AI Frameworks\n"
+            "- Agentic Workflows\n"
+            "- Agentic Automation\n"
+            "- AI Concepts"
+        )
+        self.update_gui()
 
     def display_lessons(self):
-        lesson_topics = list(self.lessons.knowledge_base.topics.keys())
-        lessons_str = "Available lessons:\n" + "\n".join(lesson_topics)
-        lessons_str += "\n\nType 'lesson <topic>' to view a lesson (e.g., 'lesson AI Agents')."
-        self.game_state['current_content'] = lessons_str
+        lesson_topics = list(self.knowledge_base.topics.keys())
+        self.game_state['current_content'] = "Available lessons:\n" + "\n".join(lesson_topics)
         self.update_gui()
 
     def start_quiz(self):
-        self.current_quiz = self.quiz
+        self.current_quiz = get_ai_quiz()
         question, options = self.current_quiz.get_next_question()
-        self.game_state['current_content'] = question
-        self.display_options(options)
-        self.update_gui()
-
-    def display_options(self, options):
-        for widget in self.master.winfo_children():
-            if isinstance(widget, tk.Radiobutton) or isinstance(widget, tk.Button) and widget.cget('text') == "Submit Answer":
-                widget.destroy()
-
-        for option in options:
-            tk.Radiobutton(self.master, text=option, variable=self.selected_option, value=option).pack()
-
-        tk.Button(self.master, text="Submit Answer", command=self.submit_answer).pack()
-
-    def submit_answer(self):
-        answer = self.selected_option.get()
-        result = self.current_quiz.check_answer(answer)
-        self.game_state['current_content'] = result
+        self.game_state['current_content'] = question + "\n" + "\n".join(options)
         self.update_gui()
 
     def display_feedback(self):
         self.game_state['current_content'] = "Displaying feedback (to be implemented)"
-        self.update_gui()
-
-    def show_instructions(self):
-        instructions = "Welcome to AI Adventure Quest!\n\n" \
-                       "Instructions:\n" \
-                       "- Use the buttons below to view lessons or take quizzes.\n" \
-                       "- You can also type commands in the input field and click 'Submit'.\n" \
-                       "Available commands:\n" \
-                       "  - 'lessons': View available lessons.\n" \
-                       "  - 'lesson <topic>': View a specific lesson (e.g., 'lesson AI Agents').\n" \
-                       "  - 'quiz': Start a quiz.\n" \
-                       "  - 'answer <your_answer>': Submit an answer for the quiz.\n" \
-                       "  - 'next': Move to the next question in the quiz.\n" \
-                       "  - 'reset': Reset the current quiz.\n" \
-                       "  - 'feedback': View feedback (to be implemented).\n"
-        self.game_state['current_content'] = instructions
         self.update_gui()
 
 def main():

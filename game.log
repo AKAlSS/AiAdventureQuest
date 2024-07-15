@@ -72,3 +72,8 @@
 2024-07-14 19:39:26,668 INFO: User input: AI Agents
 2024-07-14 19:39:26,669 INFO: Game state saved
 2024-07-14 19:39:26,669 INFO: Game state: {'current_content': 'Command not recognized.'}
+2024-07-14 19:43:11,621 INFO: Game state loaded
+2024-07-14 19:43:11,622 INFO: Game started
+2024-07-14 19:43:28,333 INFO: User input: lesson AI Agents
+2024-07-14 19:43:28,333 INFO: Game state saved
+2024-07-14 19:43:28,333 INFO: Game state: {'current_content': ['AI agents are autonomous entities which observe through sensors and act upon an environment using actuators and direct their activity towards achieving goals.', 'Examples of AI agents include chatbots, recommendation systems, and autonomous vehicles.', 'Key characteristics of AI agents: autonomy, social ability, reactivity, and proactiveness.', 'AI agents can be classified into reactive agents, deliberative agents, and hybrid agents.']}
