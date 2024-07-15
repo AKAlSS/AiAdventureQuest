@@ -41,6 +41,8 @@ class GameGUI:
         self.feedback_button = tk.Button(self.master, text="View Feedback", command=self.display_feedback)
         self.feedback_button.pack()
 
+        self.option_buttons = []
+
     def load_game_state(self):
         game_state = self.database.load_game_state()
         if game_state:
@@ -69,32 +71,24 @@ class GameGUI:
         if command.startswith('lesson '):
             topic = command.split(' ', 1)[1]
             lesson_content = self.knowledge_base.get_topic_info(topic)
-            self.game_state['current_content'] = lesson_content
-        elif command.startswith('quiz '):
-            answer = command.split(' ', 1)[1]
-            feedback = self.current_quiz.check_answer(answer)
-            self.game_state['current_content'] = feedback
+            self.game_state['current_content'] = lesson_content + "\n\n" + self.get_instructions()
         elif command == 'quiz start':
-            self.current_quiz = self.quiz
-            question, options = self.current_quiz.get_next_question()
-            self.game_state['current_content'] = question + "\n" + "\n".join(options)
-        elif command == 'quiz next':
-            question, options = self.current_quiz.get_next_question()
-            self.game_state['current_content'] = question + "\n" + "\n".join(options)
+            self.start_quiz()
         elif command == 'reset':
-            self.current_quiz.reset()
-            self.game_state['current_content'] = "Quiz has been reset."
+            self.reset_quiz()
         else:
-            self.game_state['current_content'] = "Command not recognized. Please use 'lesson [topic]', 'quiz start', 'quiz [answer]', 'quiz next', or 'reset'."
+            self.game_state['current_content'] = "Command not recognized. Please use 'lesson [topic]', 'quiz start', or 'reset'."
 
     def show_instructions(self):
-        self.game_state['current_content'] = (
+        self.game_state['current_content'] = self.get_instructions()
+        self.update_gui()
+
+    def get_instructions(self):
+        return (
             "Welcome to AI Adventure Quest!\n\n"
             "Available commands:\n"
             "- 'lesson [topic]': View a lesson on a specific topic.\n"
             "- 'quiz start': Start the quiz.\n"
-            "- 'quiz [answer]': Submit an answer to the current quiz question.\n"
-            "- 'quiz next': Proceed to the next quiz question.\n"
             "- 'reset': Reset the current quiz.\n\n"
             "Topics available:\n"
             "- AI Agents\n"
@@ -103,21 +97,61 @@ class GameGUI:
             "- Agentic Automation\n"
             "- AI Concepts"
         )
-        self.update_gui()
 
     def display_lessons(self):
         lesson_topics = list(self.knowledge_base.topics.keys())
-        self.game_state['current_content'] = "Available lessons:\n" + "\n".join(lesson_topics)
+        self.game_state['current_content'] = "Available lessons:\n" + "\n".join(lesson_topics) + "\n\n" + self.get_instructions()
         self.update_gui()
 
     def start_quiz(self):
         self.current_quiz = get_ai_quiz()
+        self.show_next_question()
+
+    def show_next_question(self):
         question, options = self.current_quiz.get_next_question()
-        self.game_state['current_content'] = question + "\n" + "\n".join(options)
+        if not options:
+            self.game_state['current_content'] = question + "\n\n" + self.get_instructions()
+        else:
+            self.game_state['current_content'] = question
+            self.update_gui()
+            self.display_options(options)
+
+    def display_options(self, options):
+        for btn in self.option_buttons:
+            btn.destroy()
+        self.option_buttons = []
+        self.selected_option.set(None)
+        for option in options:
+            btn = tk.Radiobutton(self.master, text=option, variable=self.selected_option, value=option)
+            btn.pack(anchor=tk.W)
+            self.option_buttons.append(btn)
+        self.submit_answer_button = tk.Button(self.master, text="Submit Answer", command=self.submit_answer)
+        self.submit_answer_button.pack()
+        self.option_buttons.append(self.submit_answer_button)
+
+    def submit_answer(self):
+        selected_answer = self.selected_option.get()
+        if selected_answer:
+            feedback = self.current_quiz.check_answer(selected_answer)
+            question, options = self.current_quiz.get_next_question()
+            self.game_state['current_content'] = feedback + "\n\n" + question
+            self.update_gui()
+            if options:
+                self.display_options(options)
+            else:
+                self.game_state['current_content'] += "\n\nQuiz finished. You can reset the quiz to start over."
+                self.update_gui()
+        else:
+            self.game_state['current_content'] = "Please select an answer."
+            self.update_gui()
+
+    def reset_quiz(self):
+        self.current_quiz.reset()
+        self.game_state['current_content'] = "Quiz has been reset.\n\n" + self.get_instructions()
         self.update_gui()
 
     def display_feedback(self):
-        self.game_state['current_content'] = "Displaying feedback (to be implemented)"
+        self.game_state['current_content'] = "Displaying feedback (to be implemented)" + "\n\n" + self.get_instructions()
         self.update_gui()
 
 def main():
